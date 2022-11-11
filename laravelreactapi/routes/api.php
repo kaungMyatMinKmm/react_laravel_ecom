@@ -17,6 +17,17 @@ use App\Http\Controllers\API\Authcontroller;
 Route::post('/register',[Authcontroller::class, 'register']);
 Route::post('/login',[Authcontroller::class, 'login']);
 
+Route::middleware('auth:sanctum')->group(function ()
+{
+    Route::get('/checkingAuthenticated', function ()
+    {
+        return response()->json(
+            ['message' => 'You are in', 'status' => 200],
+            200);
+    });
+   Route::post('/logout',[Authcontroller::class, 'logout']); 
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

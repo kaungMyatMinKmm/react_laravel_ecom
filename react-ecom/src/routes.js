@@ -1,4 +1,4 @@
-import {useRoutes} from "react-router-dom";
+import {useRoutes, Navigate} from "react-router-dom";
 
 import Home from "./compnents/frontend/Home";
 import Register from "./compnents/frontend/auth/Register";
@@ -8,8 +8,10 @@ import Login from "./compnents/frontend/auth/Login";
 import MasterLayout from "../src/layouts/admin/MasterLayout";
 import Dashboard from "./compnents/admin/Dashboard";
 import Profile from "./compnents/admin/Profile";
+import AdminPrivateRoute from "./AdminPrivateRoute";
 
 const Router = () => {
+    const token = localStorage.getItem('auth_token');
     let element = useRoutes([
 
         {
@@ -19,16 +21,21 @@ const Router = () => {
             ]
         },
 
-        {path:"/register", element: <Register />},
-        {path:"/login", element: <Login />},
+        {path:"/register", element: token ? <Navigate to="/" /> : <Register />},
+        {path:"/login", element: token ? <Navigate to ="/" /> : <Login />},
         
-        {
-            element: <MasterLayout />,
-            children: [
-                {path:"/admin/", element: <Dashboard />},
-                {path:"/admin/dashboard", element: <Dashboard />},
-                {path:"/admin/profile", element: <Profile />}
+        {   
+            path:"/", element: <AdminPrivateRoute />,
+            children:[
+                {element:<MasterLayout />,
+                    children: [
+                        {path:"/admin/", element: <Dashboard />},
+                        {path:"/admin/dashboard", element: <Dashboard />},
+                        {path:"/admin/profile", element: <Profile />}
+                    ]
+                }
             ]
+            
         }
     ])
 
